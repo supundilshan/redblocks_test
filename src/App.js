@@ -5,8 +5,10 @@ import ViewInfo from './components/ViewInfo';
 function App() {
   return (
     <div className="App">
-      <Form/>
-      <ViewInfo/>
+      <div className='row'>
+        <div className='col-lg-4'> <Form /> </div>
+        <div className='col-lg-8'> <ViewInfo /> </div>
+      </div>
     </div>
   );
 }
