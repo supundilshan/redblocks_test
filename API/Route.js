@@ -20,10 +20,10 @@ Routes.route('/add').post(function(req,res){
 
 // get data
 Routes.route('/').get(function(req,res){
-    UserInfo.find(function(err,student){
+    UserInfo.find(function(err,userinfo){
         if(err)
             console.log(err);
-        else{res.json(student);
+        else{res.json(userinfo);
         }
     });
 });
