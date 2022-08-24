@@ -61,7 +61,7 @@ class Form extends Component {
     }
 
     submitHandler = (e) =>{
-        e.preventDefault();
+        // e.preventDefault();
         // let isEmpty = checkEmptyFields();
         if (this.checkEmptyFields()){
             alert("please fill all fields");

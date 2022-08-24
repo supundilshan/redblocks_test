@@ -19,7 +19,7 @@ Routes.route('/add').post(function(req,res){
 })
 
 // get data
-Routes.route('/').get(function(req,res){
+Routes.route('/view').get(function(req,res){
     UserInfo.find(function(err,userinfo){
         if(err)
             console.log(err);
