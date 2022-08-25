@@ -1,9 +1,9 @@
 .table-container {
-    border: 2px solid black;
+    border: 2px solid rgba(88, 85, 85, 0.3);
     border-radius: 15px 15px 15px 15px;
-    background-color: rgba(132, 187, 135, 0.353);
+    background-color: rgba(9, 1, 255, 0.079);
     width: 100%;
-    height: 70vh;
+    height: 80vh;
 
     padding: 2%;
     margin: 5px;
@@ -11,6 +11,13 @@
     overflow-y: scroll
 }
 
+.form-empty-text {
+    margin-top: 50px;
+    text-align: center;
+    color: rgb(87, 85, 85);
+}
+
+/* stying ths scrol bar */
 .table-container::-webkit-scrollbar {
     width: 15px;
 }

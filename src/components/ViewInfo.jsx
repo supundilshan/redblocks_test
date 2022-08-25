@@ -10,13 +10,12 @@ class ViewInfo extends Component {
 
     }
 
+    // get data from API using GET method
+    // store data to UserInfo
     componentDidMount() {
         axios.get('http://localhost:4000/view')
             .then(response => {
-                // console.log(response.data)
                 this.setState({ UserInfo: response.data });
-                // console.log("in get")
-                // console.log(this.state.student);
             })
             .catch(function (error) {
                 console.log(error);
@@ -27,7 +26,6 @@ class ViewInfo extends Component {
         return (
             <div className='table-container'>
                 <h4 align="center"> User Details</h4>
-                {/* {this.state.student} */}
                 <table className='table table-striped' style={{ marginTop: 20 }}>
                     <thead>
                         <tr>
@@ -50,6 +48,11 @@ class ViewInfo extends Component {
                         }
                     </tbody>
                 </table>
+                {/* If there are no data display no data msg */}
+                {/* No data means length of UserInfo is 0 */}
+                <div className='form-empty-text' style={{ display: this.state.UserInfo.length == 0 ? "" : "none" }}>
+                    <h3>No records have been entered yet</h3>
+                </div>
             </div>
         );
     }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+
 import './STYLES/FormStyles.css'
 
 class Form extends Component {
@@ -14,28 +15,44 @@ class Form extends Component {
         }
     }
 
+    // Validate user name >> user nama must contain letters and space only
     validateUserName = () => {
         let validname = /^[A-Za-z\s]*$/;
-        // /^[A-Za-z\s]*$/ will match any letter from a to z
-        if (!validname.test(this.state.Name)) {
-            this.setState({ nameValidationERROR: true })
+        // /^[A-Za-z\s]*$/ will match any letter from a to z and spaces
+        // If user name only contains letters and spaces
+        // set nameValidationERROR as false >> I.e no validation errors
+        if (validname.test(this.state.Name)) {
+            this.setState({ nameValidationERROR: false })
         }
-        else { this.setState({ nameValidationERROR: false }) }
+        else { this.setState({ nameValidationERROR: true }) }
     }
 
+    // validate NIS >> NIC must contain numbers and letters only
+    // for srilankan standerds NIC have 10 charactors and first 9 must numbers
+    // And last charactor must numbetr or digit
     validateNIC = () => {
-        let validnic = /^[A-Za-z0-9]*$/;
-        // /^[A-Za-z0-9]*$/ will match any letter from a to z and numbers 0 to 9
-        if (!validnic.test(this.state.NIC)) {
-            this.setState({ nicValidationERROR: true })
+
+        // /^[0-9]*$/ will match any numbers 0 to 9
+        let validnic_firstpart = /^[0-9]*$/;
+
+        // /^[A-Za-z]*$/ will match any letter from a to z and numbers from 0 to 9
+        let validnic_lastpart = /^[A-Za-z0-9]*$/;
+
+        let firstCharactors = this.state.NIC.substring(0, 9); //First part of NIC
+        let lastCharactor = this.state.NIC.substring(9, 10); //Second part of NIC
+
+        // **if nis has numbers and letters AND ** if the last element is number or character
+        // set nicValidationERROR as false >>> I.e no validation errors
+        if (validnic_firstpart.test(firstCharactors) && validnic_lastpart.test(lastCharactor)) {
+            this.setState({ nicValidationERROR: false })
         }
-        else { this.setState({ nicValidationERROR: false }) }
+        else { this.setState({ nicValidationERROR: true }) }
     }
 
+    // If field is ampty it returns true
     checkEmptyFields = () => {
         if (this.state.Name == '' || this.state.NIC == '' || this.state.Gender == '' || this.state.NIC.length != 10) {
             return true;
-            // alert("please fill all fields");
         }
         else { return false }
     }
@@ -55,71 +72,55 @@ class Form extends Component {
         this.setState({
             [name]: value
         }, () => {
-            // validate the user name and NIC
+            // validate the user name while he typing the name
             this.validateUserName();
+            // validate the NIC while he typing the NIC
             this.validateNIC();
         });
     }
 
     submitHandler = (e) => {
 
-        // alert(`${this.state.nameValidationERROR},${this.state.nicValidationERROR}`);
-
         // Form cannot submit with empty fields
         if (this.checkEmptyFields()) {
             e.preventDefault();
-            alert("please fill all fields");
+            alert("Please fill in all fields");
 
         }
-        // form cannot submit with errors
+        // form cannot submit with errors >> name validation errors and NIC validation errors
         else if (this.state.nameValidationERROR || this.state.nicValidationERROR) {
             e.preventDefault();
-            alert("please correct the errors");
+            alert("Please correct the mistakes");
         }
         // form only dubmit with errorless and complete fields
         else {
-            // if all the validations are passed we store data to db
+            // store nessasary data on object
             const obj = {
                 Name: this.state.Name,
                 NIC: this.state.NIC,
                 Gender: this.state.Gender,
             };
 
-            // send data to backend
-            axios.post('http://localhost:4000/add', obj).then(res => console.log(res.data));
+            // send object data to backend
+            // back end API runs on localhost and 4000 port
+            axios({
+                method: 'post',
+                url: 'http://localhost:4000/add',
+                data: obj,
+                })
+                .then(function (response) {
+                    //handle success
+                    console.log(response);
+                })
+                .catch(function (error) {
+                    //handle error
+                    console.log(error);
+                });
 
-            // reset state
+            // after successfull submition >> reset state
             this.resetState();
 
         }
-
-        // e.preventDefault();
-        // if (this.checkEmptyFields()){
-        //     e.preventDefault();
-        // alert("please fill all fields");
-        //     console.log("please fill all fields")
-        // }
-        // else if(this.stste.nameValidationERROR == true || this.state.nicValidationERROR == true){
-        //     e.preventDefault();
-        //     // console.log("please correct the errors")
-        //     // console.log(this.nameValidationERROR,"  ", this.nicValidationERROR)
-        //     alert("please correct the errors");
-        // }
-        // else{
-        //     e.preventDefault();
-        // alert("all fine");
-        // console.log("all fine")
-        // console.log(this.nameValidationERROR,"  ", this.nicValidationERROR)
-        // if all the validations are passed we store data to db
-        // const obj = {
-        //     Name : this.state.Name,
-        //     NIC : this.state.NIC,
-        //     Gender : this.state.Gender,
-        // };
-
-        // // send data to backend
-        // axios.post('http://localhost:4000/add', obj).then(res=>console.log(res.data));
-        // }
     }
 
     render() {
@@ -133,11 +134,11 @@ class Form extends Component {
                             className="form-control"
                             name='Name'
                             type="text"
-                            // value={this.state.Name}
                             onChange={this.onChangehandler}
                             placeholder="Please enter your name"
                         />
                     </div>
+                    {/* if the name in incorrect format display error msg */}
                     <p className='Worning-name' style={{ color: "red", display: this.state.nameValidationERROR ? "block" : "none" }}> * The name must contain only letters </p>
                     <div className="form-group">
                         <label> NIC : </label>
@@ -146,16 +147,16 @@ class Form extends Component {
                             name='NIC'
                             type="text"
                             maxLength={10}
-                            // value={this.state.NIC}
                             onChange={this.onChangehandler}
                             placeholder="Please enter your NIC number"
                         />
                     </div>
-                    <p className='Worning-name' style={{ color: "red", display: this.state.nicValidationERROR ? "block" : "none" }}> * Invalid NIC format, please check and enter correct NIC number</p>
+                    {/* if the nic in incorrect format display error msg */}
+                    <p className='Worning-name' style={{ color: "red", display: this.state.nicValidationERROR ? "block" : "none" }}> * Please enter the valid number on your National Identity Card. </p>
                     <div className="form-group">
                         <label> Gender : </label>
-                        <select className="form-control" name='Gender' value={this.state.Gender} onChange={this.onChangehandler}>
-                            <option> Please select your gender </option>
+                        <select className="form-control gender-options" name='Gender' value={this.state.Gender} onChange={this.onChangehandler}>
+                            <option value="">Please select your gender.. </option>
                             <option value="Male"> Male </option>
                             <option value="Female"> Female </option>
                             <option value="Non-binary"> Non-binary </option>

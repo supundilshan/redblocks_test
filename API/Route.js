@@ -3,13 +3,11 @@ const Routes = express.Router();
 
 let UserInfo = require('./UserDataSchema');
 
-// store
+// Store UserInfo to Mongodb
 Routes.route('/add').post(function (req, res) {
     let userinfo = new UserInfo(req.body);
-    // console.log(req.body);
-    // console.log("receved")
     userinfo.save()
-        .then(student => {
+        .then(userinfo => {
             res.status(200).json({ 'UserInfo': 'UserInfo stored' });
         })
         .catch(err => {
@@ -18,7 +16,7 @@ Routes.route('/add').post(function (req, res) {
 
 })
 
-// get data
+// Get data from mongo and send to front end
 Routes.route('/view').get(function (req, res) {
     UserInfo.find(function (err, userinfo) {
         if (err)
