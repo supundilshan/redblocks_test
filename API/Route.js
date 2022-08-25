@@ -24,7 +24,9 @@ Routes.route('/view').get(function (req, res) {
         else {
             res.json(userinfo);
         }
-    });
+    }).sort({"_id":-1}); 
+    // By using .sort({"_id":-1}) we expext that data to be sort by the insertion time
+    // Then the new items are always will display on top of the table in front end
 });
 
 module.exports = Routes;
